@@ -1,0 +1,13 @@
+.idea
+.settings
+.svn
+.classpath
+bin
+compile
+dist
+out
+reports
+test
+*.iml
+*.class
+*.apk
