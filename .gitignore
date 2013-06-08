@@ -7,6 +7,7 @@ compile
 dist
 out
 reports
+target
 test
 *.iml
 *.class
