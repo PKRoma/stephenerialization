@@ -33,7 +33,7 @@ import com.enragedginger.stephenerialization.sandwich.Sandwich;
  * @author Stephen Hopper
  *
  */
-public class SandwichStephenerializerFunkTest {
+public class SandwichStephenerializerIT {
 	
 	private static final Class<?> sandwichClass = Sandwich.class;
 	private static final String className = sandwichClass.getSimpleName();

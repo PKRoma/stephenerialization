@@ -27,7 +27,7 @@ import org.junit.Test;
 import com.enragedginger.stephenerialization.annotations.Stephenerializable;
 import com.enragedginger.stephenerialization.sandwich.SubSandwich;
 
-public class SubSandwichStephenerializerFunkTest {
+public class SubSandwichStephenerializerIT {
 
 	private static final Class<?> sandwichClass = SubSandwich.class;
 	private static final String className = sandwichClass.getSimpleName();
