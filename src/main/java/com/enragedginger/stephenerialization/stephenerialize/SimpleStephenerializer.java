@@ -47,7 +47,7 @@ public class SimpleStephenerializer implements Stephenerializer {
 			try {
 				streamer.writeInt(version); // write the version out to the stream
 				for (StephenerializableField field : fields) {
-					writeField(object, clazz, field.getField(), streamer);
+					writeField(object, field.getField(), streamer);
 				}
 			} catch (Exception e) {
 				throw new StephenerializationException(ERROR_MSG, e);
@@ -55,11 +55,10 @@ public class SimpleStephenerializer implements Stephenerializer {
 		}
 	}
 	
-	private void writeField(Object object, Class<?> clazz, Field field,
-			StephenerializationStream streamer)
+	private void writeField(Object object, Field field, StephenerializationStream streamer)
 			throws IllegalArgumentException, IllegalAccessException {
 		field.setAccessible(true);
-		final StephenerializableType type = StephenerializableType.lookup(clazz);
+		final StephenerializableType type = StephenerializableType.lookup(field.getType());
 		switch (type) {
 			case BYTE :
 				streamer.writeByte(field.getByte(object));

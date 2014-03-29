@@ -101,7 +101,8 @@ public class StephenerializableAnnotationProcessor extends AbstractProcessor {
             w.write("try {\n");
             w.write("stream.writeInt(" + stephenerializable.version() + ");\n");
             for (StephenerializationPreprocessorField field : fields) {
-                w.write("stream.writeObject(object." + field.getGetterName() + "());\n");
+                //w.write("stream.writeObject(object." + field.getGetterName() + "());\n");
+                w.write("stream." + field.getObjectOutputStreamMethod() + "(object." + field.getGetterName() + "());\n");
             }
 
             w.write("} catch (Exception e) {\n");
@@ -141,17 +142,17 @@ public class StephenerializableAnnotationProcessor extends AbstractProcessor {
                 w.write("object." + field.getSetterName() + "(");
                 if (!field.isPrimitive()) {
                     w.write("(" + field.getFieldTypeName() + ") ");
-                } else {
+                }/* else {
                     w.write("(" + field.getCastType() + ") ");
-                }
-                //w.write("stream." + field.getObjectInputStreamMethod() + "());\n");
-                w.write("stream.readObject());\n");
+                }*/
+                w.write("stream." + field.getObjectInputStreamMethod() + "());\n");
+                //w.write("stream.readObject());\n");
 
                 previousVersion = field.getVersion();
             }
             w.write("}\n"); //close last if block
             w.write("} catch (Exception e) {\n");
-            w.write("e.printStackTrace();\n");
+            //w.write("e.printStackTrace();\n");
             w.write("throw new StephenerializationException(\"An error occurred during Destephenerialization.\", e);\n");
             w.write("}\n");
         }

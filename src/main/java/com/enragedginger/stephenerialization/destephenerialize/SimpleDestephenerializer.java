@@ -32,7 +32,7 @@ import com.enragedginger.stephenerialization.streamer.DestephenerializationStrea
  */
 public class SimpleDestephenerializer implements Destephenerializer {
 	
-	private static final String ERROR_MSG = "An error occurred while performing destepherialization.";
+	private static final String ERROR_MSG = "An error occurred while performing destephenerialization.";
 	
 	private StephenerializableFieldFactory fieldFactory;
 
@@ -46,18 +46,17 @@ public class SimpleDestephenerializer implements Destephenerializer {
 			final int version = streamer.readInt(); // read the version from the stream
 			final Set<StephenerializableField> fields = getFieldFactory().generateFields(clazz, version);
 			for (StephenerializableField field : fields) {
-				readField(object, clazz, field.getField(), streamer);
+				readField(object, field.getField(), streamer);
 			}
 		} catch (Exception e) {
 			throw new StephenerializationException(ERROR_MSG, e);
 		}
 	}
 	
-	private void readField(Object object, Class<?> clazz, Field field,
-			DestephenerializationStream streamer)
+	private void readField(Object object, Field field, DestephenerializationStream streamer)
 			throws IllegalArgumentException, IllegalAccessException {
 		field.setAccessible(true);
-		final StephenerializableType type = StephenerializableType.lookup(clazz);
+		final StephenerializableType type = StephenerializableType.lookup(field.getType());
 		switch (type) {
 			case BYTE :
 				field.setByte(object, streamer.readByte());
@@ -75,7 +74,7 @@ public class SimpleDestephenerializer implements Destephenerializer {
 				field.setFloat(object, streamer.readFloat());
 				break;
 			case DOUBLE :
-				field.setDouble(object, streamer.readFloat());
+				field.setDouble(object, streamer.readDouble());
 				break;
 			case BOOLEAN :
 				field.setBoolean(object, streamer.readBoolean());
