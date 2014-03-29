@@ -10,6 +10,7 @@ import java.io.Writer;
 import java.util.Set;
 
 import com.enragedginger.stephenerialization.annotations.*;
+import jdk.nashorn.internal.codegen.CompilationException;
 
 /**
  * Processes {@link Stephenerializable} annotations and builds stephenerialization logic
@@ -34,7 +35,7 @@ public class StephenerializableAnnotationProcessor extends AbstractProcessor {
                 try {
                     processAnnotation(element, messager);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    throw new RuntimeException("An error occurred while preprocessing Stephenerialization annotations.", e);
                 }
             }
         }
@@ -55,6 +56,24 @@ public class StephenerializableAnnotationProcessor extends AbstractProcessor {
 
         Writer w = sourceFile.openWriter();
 
+        writePackageImportsAndClass(w, element, simpleGeneratedClassName);
+        writeWriteMethod(w, className, fields, stephenerializable);
+        writeReadMethod(w, className, fields);
+
+        //close class
+        w.write("}\n");
+        w.close();
+        messager.printMessage(Diagnostic.Kind.NOTE, generatedClassName);
+    }
+
+    /**
+     * Writes the opening of the stephenerializer class.
+     * @param w The class's writer.
+     * @param element The element which references the class which is being processed.
+     * @param simpleGeneratedClassName The simple name of the generated class.
+     * @throws IOException If an error occurs.
+     */
+    private void writePackageImportsAndClass(Writer w, Element element, String simpleGeneratedClassName) throws IOException {
         //write package and class declaration name
         PackageElement p = processingEnv.getElementUtils().getPackageOf(element);
         w.write("package " + p.getQualifiedName().toString() + ";\n\n");
@@ -62,7 +81,19 @@ public class StephenerializableAnnotationProcessor extends AbstractProcessor {
                 "import java.io.ObjectInputStream;\n" +
                 "import java.io.ObjectOutputStream;\n\n");
         w.write("class " + simpleGeneratedClassName + " {\n");
+    }
 
+    /**
+     * Creates the read method on the class.
+     *
+     * @param w                  The class's writer.
+     * @param className          The fullname of the class for which this stephenerializer is being created.
+     * @param fields             The fields on the object.
+     * @param stephenerializable The Stephenerializable annotation on the class.
+     * @throws IOException If an error occurs.
+     */
+    private void writeWriteMethod(Writer w, String className, Set<StephenerializationPreprocessorField> fields,
+                                  Stephenerializable stephenerializable) throws IOException {
         //write stephenerialize method
         w.write("public static void stephenerialize(" + className + " object, ObjectOutputStream stream) {\n");
 
@@ -78,7 +109,17 @@ public class StephenerializableAnnotationProcessor extends AbstractProcessor {
             w.write("}\n");
         }
         w.write("}\n\n");
+    }
 
+    /**
+     * Creates the write method on the class.
+     *
+     * @param w         The class's writer.
+     * @param className The fullname of the class for which this stephenerializer is being created.
+     * @param fields    The fields on the object.
+     * @throws IOException If an error occurs.
+     */
+    private void writeReadMethod(Writer w, String className, Set<StephenerializationPreprocessorField> fields) throws IOException {
         //write read method
         w.write("public static void destephenerialize(" + className + " object, ObjectInputStream stream) {\n");
         if (fields != null && !fields.isEmpty()) {
@@ -115,11 +156,5 @@ public class StephenerializableAnnotationProcessor extends AbstractProcessor {
             w.write("}\n");
         }
         w.write("}\n");
-
-
-        //close class
-        w.write("}\n");
-        w.close();
-        messager.printMessage(Diagnostic.Kind.NOTE, generatedClassName);
     }
 }
