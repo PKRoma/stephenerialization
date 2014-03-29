@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.enragedginger.stephenerialization;
+package com.enragedginger.stephenerialization.sandwich;
 
 import static org.junit.Assert.*;
 
@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import com.enragedginger.stephenerialization.TestStreamBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,7 +34,7 @@ import com.enragedginger.stephenerialization.sandwich.Sandwich;
  * @author Stephen Hopper
  *
  */
-public class SandwichStephenerializerIT {
+public class SandwichStephenerializerTest {
 	
 	private static final Class<?> sandwichClass = Sandwich.class;
 	private static final String className = sandwichClass.getSimpleName();

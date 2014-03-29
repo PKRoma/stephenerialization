@@ -15,7 +15,7 @@ import com.enragedginger.stephenerialization.annotations.Stephenerializable;
  * @author Stephen Hopper
  *
  */
-public class CyclicStephenerializerIT {
+public class CyclicStephenerializerTest {
 	
 	private CyclicA cyclicA;
 	private CyclicB cyclicB;

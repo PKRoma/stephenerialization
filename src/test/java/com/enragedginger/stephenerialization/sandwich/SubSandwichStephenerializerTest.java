@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.enragedginger.stephenerialization;
+package com.enragedginger.stephenerialization.sandwich;
 
 import static org.junit.Assert.assertEquals;
 
@@ -21,13 +21,14 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import com.enragedginger.stephenerialization.TestStreamBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.enragedginger.stephenerialization.annotations.Stephenerializable;
 import com.enragedginger.stephenerialization.sandwich.SubSandwich;
 
-public class SubSandwichStephenerializerIT {
+public class SubSandwichStephenerializerTest {
 
 	private static final Class<?> sandwichClass = SubSandwich.class;
 	private static final String className = sandwichClass.getSimpleName();
