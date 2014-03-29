@@ -159,9 +159,9 @@ public class Sandwich implements Serializable {
 	 * @param streamer The output stream to use.
 	 */
 	private void writeObject(ObjectOutputStream streamer) {
-//        SandwichStephenerializer.stephenerialize(this, streamer);
-		final StephenerializationService service = StephenerializationLookupService.lookup();
-		service.stephenerialize(this, streamer, Sandwich.class);
+        SandwichStephenerializer.stephenerialize(this, streamer);
+//		final StephenerializationService service = StephenerializationLookupService.lookup();
+//		service.stephenerialize(this, streamer, Sandwich.class);
 	}
 	
 	/**
@@ -169,9 +169,9 @@ public class Sandwich implements Serializable {
 	 * @param streamer The input stream to use.
 	 */
 	private void readObject(ObjectInputStream streamer) throws Exception {
-//        SandwichStephenerializer.destephenerialize(this, streamer);
-		final StephenerializationService service = StephenerializationLookupService.lookup();
-		service.destephenerialize(this, streamer, Sandwich.class);
+        SandwichStephenerializer.destephenerialize(this, streamer);
+//		final StephenerializationService service = StephenerializationLookupService.lookup();
+//		service.destephenerialize(this, streamer, Sandwich.class);
 	}
 	
 }
