@@ -13,6 +13,7 @@ public class StephenerializationPreprocessorField implements Comparable<Stephene
     private String fieldTypeName;
     private String objectInputStreamMethod;
     private boolean isPrimitive;
+    private String castType;
 
     public int getVersion() {
         return version;
@@ -76,6 +77,14 @@ public class StephenerializationPreprocessorField implements Comparable<Stephene
 
     public void setPrimitive(boolean isPrimitive) {
         this.isPrimitive = isPrimitive;
+    }
+
+    public String getCastType() {
+        return castType;
+    }
+
+    public void setCastType(String castType) {
+        this.castType = castType;
     }
 
     /**

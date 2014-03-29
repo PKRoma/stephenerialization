@@ -70,7 +70,7 @@ public class StephenerializableAnnotationProcessor extends AbstractProcessor {
 
         if (fields != null && !fields.isEmpty()) {
             w.write("try {\n");
-            w.write("stream.writeLong(" + stephenerializable.version() + ");\n");
+            w.write("stream.writeInt(" + stephenerializable.version() + ");\n");
             for (StephenerializationPreprocessorField field : fields) {
                 w.write("stream.writeObject(object." + field.getGetterName() + "());\n");
             }
@@ -86,30 +86,33 @@ public class StephenerializableAnnotationProcessor extends AbstractProcessor {
         if (fields != null && !fields.isEmpty()) {
             w.write("try {\n");
             w.write("final int version = stream.readInt();\n");
-            w.write("switch (version) {\n");
+
             Integer previousVersion = null;
             for (StephenerializationPreprocessorField field : fields) {
                 if (previousVersion == null) {
                     previousVersion = field.getVersion();
-                    w.write("case " + field.getVersion() + ":\n");
+                    w.write("if (version >= " + field.getVersion() + ") {\n");
                 }
 
                 if (previousVersion != field.getVersion()) {
-                    w.write("break;\n");
-                    w.write("case " + field.getVersion() + ":\n");
+                    w.write("}\n");
+                    w.write("if (version >= " + field.getVersion() + ") {\n");
                 }
 
                 w.write("object." + field.getSetterName() + "(");
                 if (!field.isPrimitive()) {
                     w.write("(" + field.getFieldTypeName() + ") ");
+                } else {
+                    w.write("(" + field.getCastType() + ") ");
                 }
-                w.write("stream." + field.getObjectInputStreamMethod() + "());\n");
+                //w.write("stream." + field.getObjectInputStreamMethod() + "());\n");
+                w.write("stream.readObject());\n");
 
                 previousVersion = field.getVersion();
             }
-            w.write("break;\n");
-            w.write("}\n");
+            w.write("}\n"); //close last if block
             w.write("} catch (Exception e) {\n");
+            w.write("e.printStackTrace();\n");
             w.write("throw new StephenerializationException(\"An error occurred during Destephenerialization.\", e);\n");
             w.write("}\n");
         }

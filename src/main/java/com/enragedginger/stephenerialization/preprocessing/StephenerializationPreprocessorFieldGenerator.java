@@ -38,6 +38,7 @@ public class StephenerializationPreprocessorFieldGenerator {
         field.setFieldTypeName(typeName);
         field.setPrimitive(isPrimitive);
         field.setObjectInputStreamMethod(buildInputObjectStreamMethodName(isPrimitive, typeName));
+        field.setCastType(buildCastType(isPrimitive, typeName));
 
         final String fieldName = variableElement.getSimpleName().toString();
         field.setFieldName(fieldName);
@@ -48,6 +49,32 @@ public class StephenerializationPreprocessorFieldGenerator {
         field.setSetterName("set" + upperCasedFieldName);
 
         return field;
+    }
+
+    private String buildCastType(boolean isPrimitive, String typeName) {
+        if (isPrimitive) {
+            if ("int".equals(typeName)) {
+                return "Integer";
+            } else if ("long".equals(typeName)) {
+                return "Long";
+            } else if ("short".equals(typeName)) {
+                return "Short";
+            } else if ("byte".equals(typeName)) {
+                return "Byte";
+            } else if ("float".equals(typeName)) {
+                return "Float";
+            } else if ("double".equals(typeName)) {
+                return "Double";
+            } else if ("boolean".equals(typeName)) {
+                return "Boolean";
+            } else if ("char".equals(typeName)) {
+                return "Character";
+            } else {
+                throw new IllegalArgumentException("Type was supposedly primitive but was actually: " + typeName);
+            }
+        } else {
+            return "readObject";
+        }
     }
 
     private String buildInputObjectStreamMethodName(boolean isPrimitive, String typeName) {
