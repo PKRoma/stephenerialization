@@ -93,24 +93,6 @@
                 </executions>
             </plugin>
             <plugin>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.6</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                        <configuration>
-                            <includes>
-                                <include>**/*IT.java</include>
-                            </includes>
-                            <summaryFile>${project.build.directory}/failsafe-reports/failsafe-summary.xml</summaryFile>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
                 <version>1.8</version>
@@ -123,7 +105,6 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>src/integration/java</source>
                                 <source>src/util/java</source>
                             </sources>
                         </configuration>
