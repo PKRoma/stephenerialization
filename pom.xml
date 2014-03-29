@@ -31,9 +31,67 @@
         <outputDirectory>target/classes</outputDirectory>
         <finalName>${project.artifactId}-${project.version}</finalName>
         <testOutputDirectory>target/test-classes</testOutputDirectory>
-        <sourceDirectory>src/main</sourceDirectory>
-        <testSourceDirectory>src/test</testSourceDirectory>
+        <sourceDirectory>src/main/java</sourceDirectory>
+        <testSourceDirectory>src/test/java</testSourceDirectory>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <compilerArgument>-proc:none</compilerArgument>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>execution1</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                        <configuration>
+                            <annotationProcessors>
+                                <annotationProcessor>
+                                    com.enragedginger.stephenerialization.preprocessing.StephenerializableAnnotationProcessor
+                                </annotationProcessor>
+                            </annotationProcessors>
+                            <proc>only</proc>
+                        </configuration>
+                    </execution>
+                    <!--<execution>
+                        <id>execution2</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <source>1.6</source>
+                            <target>1.6</target>
+                            <proc>none</proc>
+                        </configuration>
+                    </execution>-->
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.bsc.maven</groupId>
+                <artifactId>maven-processor-plugin</artifactId>
+                <version>2.0.5</version>
+                <executions>
+                    <execution>
+                        <id>process-test</id>
+                        <goals>
+                            <goal>process-test</goal>
+                        </goals>
+                        <phase>generate-test-sources</phase>
+                        <configuration>
+                            <verbose>true</verbose>
+                            <processors>
+                                <processor>com.enragedginger.stephenerialization.preprocessing.StephenerializableAnnotationProcessor</processor>
+                            </processors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.6</version>
@@ -44,8 +102,10 @@
                             <goal>verify</goal>
                         </goals>
                         <configuration>
+                            <includes>
+                                <include>**/*IT.java</include>
+                            </includes>
                             <summaryFile>${project.build.directory}/failsafe-reports/failsafe-summary.xml</summaryFile>
-                            <testSourceDirectory>src/integration</testSourceDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -53,7 +113,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.5</version>
+                <version>1.8</version>
                 <executions>
                     <execution>
                         <id>add-test-source</id>
@@ -63,8 +123,8 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>src/integration</source>
-                                <source>src/util</source>
+                                <source>src/integration/java</source>
+                                <source>src/util/java</source>
                             </sources>
                         </configuration>
                     </execution>
