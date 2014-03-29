@@ -38,12 +38,4 @@ public @interface Stephenerializable {
 	 * @return The version of the class.
 	 */
 	int version();
-
-    /**
-     * True if preprocessors should run on this class to build
-     * stephenerialization logic for this class at compile time
-     * instead of run time.
-     * @return True if preprocessors should run on this class; else false.
-     */
-    boolean preprocess() default false;
 }
