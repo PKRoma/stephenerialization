@@ -38,8 +38,6 @@ public class StephenerializableAnnotationProcessor extends AbstractProcessor {
                 }
             }
         }
-        messager.printMessage(Diagnostic.Kind.MANDATORY_WARNING, "OMG INBD IMDB LALALALALALA");
-        //throw new IllegalArgumentException("WTF GUYS!!!!");
         return true;
     }
 

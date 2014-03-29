@@ -35,70 +35,6 @@
         <testSourceDirectory>src/test/java</testSourceDirectory>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
-                <configuration>
-                    <compilerArgument>-proc:none</compilerArgument>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>execution1</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>testCompile</goal>
-                        </goals>
-                        <configuration>
-                            <annotationProcessors>
-                                <annotationProcessor>
-                                    com.enragedginger.stephenerialization.preprocessing.StephenerializableAnnotationProcessor
-                                </annotationProcessor>
-                            </annotationProcessors>
-                            <proc>only</proc>
-                        </configuration>
-                    </execution>
-                    <!--<execution>
-                        <id>execution2</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <configuration>
-                            <source>1.6</source>
-                            <target>1.6</target>
-                            <proc>none</proc>
-                        </configuration>
-                    </execution>-->
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.bsc.maven</groupId>
-                <artifactId>maven-processor-plugin</artifactId>
-                <version>2.0.5</version>
-                <executions>
-                    <execution>
-                        <id>process-test</id>
-                        <goals>
-                            <goal>process-test</goal>
-                        </goals>
-                        <phase>generate-test-sources</phase>
-                        <configuration>
-                            <verbose>true</verbose>
-                            <processors>
-                                <processor>com.enragedginger.stephenerialization.preprocessing.StephenerializableAnnotationProcessor</processor>
-                            </processors>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.14</version>
-                <configuration>
-                    <forkMode>never</forkMode>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
                 <version>1.8</version>
@@ -117,7 +53,43 @@
                     </execution>
                 </executions>
             </plugin>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <compilerArgument>-proc:none</compilerArgument>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.bsc.maven</groupId>
+                <artifactId>maven-processor-plugin</artifactId>
+                <version>2.0.5</version>
+                <executions>
+                    <execution>
+                        <id>process-test</id>
+                        <goals>
+                            <goal>process-test</goal>
+                        </goals>
+                        <phase>generate-test-sources</phase>
+                        <configuration>
+                            <verbose>true</verbose>
+                            <processors>
+                                <processor>com.enragedginger.stephenerialization.preprocessing.StephenerializableAnnotationProcessor</processor>
+                            </processors>
+                            <sourceDirectory>src</sourceDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.14</version>
+                <configuration>
+                    <forkMode>never</forkMode>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 	<dependencies>
