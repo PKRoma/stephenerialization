@@ -1,7 +1,13 @@
 package com.enragedginger.stephenerialization.preprocessing;
 
 /**
- * Created by Stephen on 3/29/2014.
+ * Represents a stephenerializable field. This class is intended for use doing preprocessing where reflection
+ * on the parent class is not yet available.
+ *
+ * This instances of this class will sort by version, order, fieldname (in that order).
+ * Other fields are not considered for compareTo and equals.
+ *
+ * @author Stephen Hopper
  */
 public class StephenerializationPreprocessorField implements Comparable<StephenerializationPreprocessorField> {
 
@@ -14,7 +20,6 @@ public class StephenerializationPreprocessorField implements Comparable<Stephene
     private String objectInputStreamMethod;
     private String objectOutputStreamMethod;
     private boolean isPrimitive;
-    private String castType;
 
     public int getVersion() {
         return version;
@@ -78,14 +83,6 @@ public class StephenerializationPreprocessorField implements Comparable<Stephene
 
     public void setPrimitive(boolean isPrimitive) {
         this.isPrimitive = isPrimitive;
-    }
-
-    public String getCastType() {
-        return castType;
-    }
-
-    public void setCastType(String castType) {
-        this.castType = castType;
     }
 
     public String getObjectOutputStreamMethod() {

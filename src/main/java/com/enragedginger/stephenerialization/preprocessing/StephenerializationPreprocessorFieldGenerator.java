@@ -10,10 +10,16 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * Created by Stephen on 3/29/2014.
+ * Generates fields for classes that are being preprocessed.
+ * @author Stephen Hopper
  */
 public class StephenerializationPreprocessorFieldGenerator {
 
+    /**
+     * Generates StephenerializationPreprocessorField for a class that is Stephenerializable and is being preprocessed.
+     * @param classElement The element refering to the annotated class.
+     * @return The set of Stephenerializable fields in classElement.
+     */
     public Set<StephenerializationPreprocessorField> generateFields(Element classElement) {
         final Set<StephenerializationPreprocessorField> instanceFields = new TreeSet<StephenerializationPreprocessorField>();
         for(VariableElement instanceField : ElementFilter.fieldsIn(classElement.getEnclosedElements())) {
@@ -26,6 +32,11 @@ public class StephenerializationPreprocessorFieldGenerator {
         return instanceFields;
     }
 
+    /**
+     * Builds a preprocessor field.
+     * @param variableElement The element refering to the field.
+     * @return The StephenerializationPreprocessorField instance built from the variable element.
+     */
     public StephenerializationPreprocessorField buildPreprocessorField(VariableElement variableElement) {
         final StephenerializationPreprocessorField field = new StephenerializationPreprocessorField();
 
@@ -39,7 +50,6 @@ public class StephenerializationPreprocessorFieldGenerator {
         field.setPrimitive(isPrimitive);
         field.setObjectInputStreamMethod(buildInputObjectStreamMethodName(isPrimitive, typeName));
         field.setObjectOutputStreamMethod(buildObjectOutputStreamMethodName(isPrimitive, typeName));
-        field.setCastType(buildCastType(isPrimitive, typeName));
 
         final String fieldName = variableElement.getSimpleName().toString();
         field.setFieldName(fieldName);
@@ -52,32 +62,12 @@ public class StephenerializationPreprocessorFieldGenerator {
         return field;
     }
 
-    private String buildCastType(boolean isPrimitive, String typeName) {
-        if (isPrimitive) {
-            if ("int".equals(typeName)) {
-                return "Integer";
-            } else if ("long".equals(typeName)) {
-                return "Long";
-            } else if ("short".equals(typeName)) {
-                return "Short";
-            } else if ("byte".equals(typeName)) {
-                return "Byte";
-            } else if ("float".equals(typeName)) {
-                return "Float";
-            } else if ("double".equals(typeName)) {
-                return "Double";
-            } else if ("boolean".equals(typeName)) {
-                return "Boolean";
-            } else if ("char".equals(typeName)) {
-                return "Character";
-            } else {
-                throw new IllegalArgumentException("Type was supposedly primitive but was actually: " + typeName);
-            }
-        } else {
-            return "readObject";
-        }
-    }
-
+    /**
+     * Builds the name of the method on an ObjectOutputStream that should be used to write this field.
+     * @param isPrimitive True if the field's data type is a primitive Java type.
+     * @param typeName The name of the type.
+     * @return The name of the method on an ObjectOutputStream that should be used to write this field.
+     */
     private String buildObjectOutputStreamMethodName(boolean isPrimitive, String typeName) {
         if (isPrimitive) {
             if ("int".equals(typeName)) {
@@ -105,6 +95,12 @@ public class StephenerializationPreprocessorFieldGenerator {
 
     }
 
+    /**
+     * Builds the name of the method on an ObjectInputStream that should be used to read this field.
+     * @param isPrimitive True if the field's data type is a primitive Java type.
+     * @param typeName The name of the type.
+     * @return The name of the method on an ObjectInputStream that should be used to read this field.
+     */
     private String buildInputObjectStreamMethodName(boolean isPrimitive, String typeName) {
         if (isPrimitive) {
             if ("int".equals(typeName)) {

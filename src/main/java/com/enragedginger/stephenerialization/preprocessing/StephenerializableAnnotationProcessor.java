@@ -54,33 +54,38 @@ public class StephenerializableAnnotationProcessor extends AbstractProcessor {
         StephenerializationPreprocessorFieldGenerator generator = new StephenerializationPreprocessorFieldGenerator();
         Set<StephenerializationPreprocessorField> fields = generator.generateFields(element);
 
-        Writer w = sourceFile.openWriter();
+        PreprocessingWriter w = new PreprocessingWriter(sourceFile.openWriter());
 
         writePackageImportsAndClass(w, element, simpleGeneratedClassName);
+
+        w.indent();
         writeWriteMethod(w, className, fields, stephenerializable);
+        w.writeLine("");
         writeReadMethod(w, className, fields);
+        w.deindent();
 
         //close class
-        w.write("}\n");
+        w.writeLine("}");
         w.close();
         messager.printMessage(Diagnostic.Kind.NOTE, generatedClassName);
     }
 
     /**
      * Writes the opening of the stephenerializer class.
-     * @param w The class's writer.
-     * @param element The element which references the class which is being processed.
+     *
+     * @param w                        The class's writer.
+     * @param element                  The element which references the class which is being processed.
      * @param simpleGeneratedClassName The simple name of the generated class.
      * @throws IOException If an error occurs.
      */
-    private void writePackageImportsAndClass(Writer w, Element element, String simpleGeneratedClassName) throws IOException {
+    private void writePackageImportsAndClass(PreprocessingWriter w, Element element, String simpleGeneratedClassName) throws IOException {
         //write package and class declaration name
         PackageElement p = processingEnv.getElementUtils().getPackageOf(element);
-        w.write("package " + p.getQualifiedName().toString() + ";\n\n");
-        w.write("import com.enragedginger.stephenerialization.StephenerializationException;\n" +
-                "import java.io.ObjectInputStream;\n" +
-                "import java.io.ObjectOutputStream;\n\n");
-        w.write("class " + simpleGeneratedClassName + " {\n");
+        w.writeLine("package " + p.getQualifiedName().toString() + ";\n");
+        w.writeLine("import com.enragedginger.stephenerialization.StephenerializationException;");
+        w.writeLine("import java.io.ObjectInputStream;");
+        w.writeLine("import java.io.ObjectOutputStream;\n");
+        w.writeLine("class " + simpleGeneratedClassName + " {");
     }
 
     /**
@@ -92,24 +97,28 @@ public class StephenerializableAnnotationProcessor extends AbstractProcessor {
      * @param stephenerializable The Stephenerializable annotation on the class.
      * @throws IOException If an error occurs.
      */
-    private void writeWriteMethod(Writer w, String className, Set<StephenerializationPreprocessorField> fields,
+    private void writeWriteMethod(PreprocessingWriter w, String className, Set<StephenerializationPreprocessorField> fields,
                                   Stephenerializable stephenerializable) throws IOException {
         //write stephenerialize method
-        w.write("public static void stephenerialize(" + className + " object, ObjectOutputStream stream) {\n");
+        w.writeLine("public static void stephenerialize(" + className + " object, ObjectOutputStream stream) {");
 
+        w.indent();
         if (fields != null && !fields.isEmpty()) {
-            w.write("try {\n");
-            w.write("stream.writeInt(" + stephenerializable.version() + ");\n");
+            w.writeLine("try {");
+            w.indent();
+            w.writeLine("stream.writeInt(" + stephenerializable.version() + ");");
             for (StephenerializationPreprocessorField field : fields) {
-                //w.write("stream.writeObject(object." + field.getGetterName() + "());\n");
-                w.write("stream." + field.getObjectOutputStreamMethod() + "(object." + field.getGetterName() + "());\n");
+                w.writeLine("stream." + field.getObjectOutputStreamMethod() + "(object." + field.getGetterName() + "());");
             }
-
-            w.write("} catch (Exception e) {\n");
-            w.write("throw new StephenerializationException(\"An error occurred during Stephenerialization.\", e);\n");
-            w.write("}\n");
+            w.deindent();
+            w.writeLine("} catch (Exception e) {");
+            w.indent();
+            w.writeLine("throw new StephenerializationException(\"An error occurred during Stephenerialization.\", e);");
+            w.deindent();
+            w.writeLine("}");
         }
-        w.write("}\n\n");
+        w.deindent();
+        w.writeLine("}");
     }
 
     /**
@@ -120,42 +129,58 @@ public class StephenerializableAnnotationProcessor extends AbstractProcessor {
      * @param fields    The fields on the object.
      * @throws IOException If an error occurs.
      */
-    private void writeReadMethod(Writer w, String className, Set<StephenerializationPreprocessorField> fields) throws IOException {
+    private void writeReadMethod(PreprocessingWriter w, String className, Set<StephenerializationPreprocessorField> fields) throws IOException {
         //write read method
-        w.write("public static void destephenerialize(" + className + " object, ObjectInputStream stream) {\n");
+        w.writeLine("public static void destephenerialize(" + className + " object, ObjectInputStream stream) {");
+        w.indent();
         if (fields != null && !fields.isEmpty()) {
-            w.write("try {\n");
-            w.write("final int version = stream.readInt();\n");
+            w.writeLine("try {");
+            w.indent();
+            w.writeLine("final int version = stream.readInt();");
 
             Integer previousVersion = null;
             for (StephenerializationPreprocessorField field : fields) {
                 if (previousVersion == null) {
                     previousVersion = field.getVersion();
-                    w.write("if (version >= " + field.getVersion() + ") {\n");
+                    w.writeLine("if (version >= " + field.getVersion() + ") {");
                 }
 
                 if (previousVersion != field.getVersion()) {
-                    w.write("}\n");
-                    w.write("if (version >= " + field.getVersion() + ") {\n");
+                    w.writeLine("}");
+                    w.writeLine("if (version >= " + field.getVersion() + ") {");
                 }
 
-                w.write("object." + field.getSetterName() + "(");
+                w.indent();
+                StringBuffer buffy = new StringBuffer();
+                buffy.append("object." + field.getSetterName() + "(");
                 if (!field.isPrimitive()) {
-                    w.write("(" + field.getFieldTypeName() + ") ");
-                }/* else {
-                    w.write("(" + field.getCastType() + ") ");
-                }*/
-                w.write("stream." + field.getObjectInputStreamMethod() + "());\n");
-                //w.write("stream.readObject());\n");
-
+                    buffy.append("(" + field.getFieldTypeName() + ") ");
+                }
+                buffy.append("stream." + field.getObjectInputStreamMethod() + "());");
+                w.writeLine(buffy.toString());
+                w.deindent();
                 previousVersion = field.getVersion();
             }
-            w.write("}\n"); //close last if block
-            w.write("} catch (Exception e) {\n");
-            //w.write("e.printStackTrace();\n");
-            w.write("throw new StephenerializationException(\"An error occurred during Destephenerialization.\", e);\n");
-            w.write("}\n");
+            w.writeLine("}"); //close last if block
+            w.deindent();
+            w.writeLine("} catch (Exception e) {");
+            w.indent();
+            w.writeLine("throw new StephenerializationException(\"An error occurred during Destephenerialization.\", e);");
+            w.deindent();
+            w.writeLine("}");
         }
-        w.write("}\n");
+        w.deindent();
+        w.writeLine("}");
+    }
+
+    /**
+     * Writes a line to the writer.
+     *
+     * @param w           The writer
+     * @param line
+     * @param indentation
+     */
+    private void writeLine(Writer w, String line, int indentation) {
+
     }
 }
