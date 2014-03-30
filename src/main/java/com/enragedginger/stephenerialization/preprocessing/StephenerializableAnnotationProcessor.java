@@ -172,15 +172,4 @@ public class StephenerializableAnnotationProcessor extends AbstractProcessor {
         w.deindent();
         w.writeLine("}");
     }
-
-    /**
-     * Writes a line to the writer.
-     *
-     * @param w           The writer
-     * @param line
-     * @param indentation
-     */
-    private void writeLine(Writer w, String line, int indentation) {
-
-    }
 }
