@@ -6,7 +6,7 @@
 	<groupId>com.enragedginger</groupId>
 	<artifactId>stephenerialization</artifactId>
 	<packaging>jar</packaging>
-	<version>2.0.1</version>
+	<version>3.0.0</version>
 	<description>Stephenerializes Java objects to solve cross version compatibility issues.</description>
 	<url>https://bitbucket.org/enraged_ginger/stephenerialization</url>
 	<licenses>
