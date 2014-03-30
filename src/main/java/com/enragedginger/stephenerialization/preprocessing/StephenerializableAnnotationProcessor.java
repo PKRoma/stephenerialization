@@ -6,11 +6,9 @@ import javax.lang.model.element.*;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.Set;
 
 import com.enragedginger.stephenerialization.annotations.*;
-import jdk.nashorn.internal.codegen.CompilationException;
 
 /**
  * Processes {@link Stephenerializable} annotations and builds stephenerialization logic
