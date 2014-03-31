@@ -47,7 +47,7 @@ public class StephenerializableAnnotationProcessor extends AbstractProcessor {
         String generatedClassName = className + "Stephenerializer";
         String simpleGeneratedClassName = simpleName + "Stephenerializer";
         Filer filer = processingEnv.getFiler();
-        JavaFileObject sourceFile = filer.createSourceFile(generatedClassName, element);
+        JavaFileObject sourceFile = filer.createSourceFile(generatedClassName);
 
         StephenerializationPreprocessorFieldGenerator generator = new StephenerializationPreprocessorFieldGenerator();
         Set<StephenerializationPreprocessorField> fields = generator.generateFields(element);
@@ -65,7 +65,7 @@ public class StephenerializableAnnotationProcessor extends AbstractProcessor {
         //close class
         w.writeLine("}");
         w.close();
-        messager.printMessage(Diagnostic.Kind.NOTE, generatedClassName);
+        messager.printMessage(Diagnostic.Kind.NOTE, "Generated stephenerializer: " + generatedClassName);
     }
 
     /**
